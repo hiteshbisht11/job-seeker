@@ -46,6 +46,11 @@ LEVER_BOARDS: list[str] = [
 CACHE_TTL_SEC = 30 * 60
 _cache: dict[str, tuple[float, list[dict]]] = {}
 
+# Cap concurrent upstream fetches so we don't starve the event loop on
+# tiny shared CPUs (Render free tier ≈ 0.1 CPU). With 34 sources running
+# unbounded, health checks time out and Render kills the container.
+_FETCH_CONCURRENCY = 4
+
 # ---- Helpers ---------------------------------------------------------------
 
 INDIAN_CITY_TOKENS = [
@@ -266,14 +271,20 @@ async def fetch_all(force: bool = False) -> list[dict]:
     if not force and "all" in _cache and now - _cache["all"][0] < CACHE_TTL_SEC:
         return _cache["all"][1]
 
+    sem = asyncio.Semaphore(_FETCH_CONCURRENCY)
+
+    async def _bounded(coro):
+        async with sem:
+            return await coro
+
     async with httpx.AsyncClient(headers={"User-Agent": "job-seeker/1.0"}) as client:
         tasks: list[asyncio.Future] = []
         for token in GREENHOUSE_BOARDS:
-            tasks.append(_fetch_greenhouse_one(client, token))
+            tasks.append(_bounded(_fetch_greenhouse_one(client, token)))
         for company in LEVER_BOARDS:
-            tasks.append(_fetch_lever_one(client, company))
-        tasks.append(_fetch_remotive(client))
-        tasks.append(_fetch_remoteok(client))
+            tasks.append(_bounded(_fetch_lever_one(client, company)))
+        tasks.append(_bounded(_fetch_remotive(client)))
+        tasks.append(_bounded(_fetch_remoteok(client)))
         results = await asyncio.gather(*tasks, return_exceptions=True)
 
     jobs: list[dict] = []

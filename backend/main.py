@@ -16,7 +16,9 @@ expires.
 
 from __future__ import annotations
 
+import asyncio
 import os
+from contextlib import asynccontextmanager
 
 from dotenv import load_dotenv
 from fastapi import FastAPI, File, HTTPException, UploadFile, status
@@ -32,7 +34,18 @@ from .parser import parse_resume                  # noqa: E402
 
 MAX_PDF_BYTES = 5 * 1024 * 1024  # 5 MB
 
-app = FastAPI(title="Job Seeker", version="0.3.0")
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    """Pre-warm the cache as a background task. Server is ready to accept
+    requests immediately; cache fills in the background. Critical on
+    free-tier hosting where startup-blocking calls cause health-check
+    timeouts and gateway 502s."""
+    asyncio.create_task(fetch_all())
+    yield
+
+
+app = FastAPI(title="Job Seeker", version="0.3.0", lifespan=lifespan)
 
 app.add_middleware(
     CORSMiddleware,
@@ -41,15 +54,6 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-
-
-@app.on_event("startup")
-async def _prewarm_cache():
-    """Pre-populate the live-jobs cache so the first user doesn't wait."""
-    try:
-        await fetch_all()
-    except Exception:
-        pass  # never block startup on a flaky external API
 
 
 @app.get("/api/health")
