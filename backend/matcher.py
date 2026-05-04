@@ -134,19 +134,24 @@ def _why_fit(matched: list[str]) -> str:
     return f"Partial fit — overlaps on {', '.join(matched)}."
 
 
+# Cap response size so the JSON payload + serialization don't blow 512 MB
+# instances. Dashboard never shows more than this anyway.
+MAX_RESULTS = 200
+
+
 def score_all(profile: ResumeProfile, jobs: list[dict]) -> list[dict]:
-    """Score every job, drop the heavy `_raw_text` field, sort, return."""
+    """Score every job, drop heavy fields, sort, return top MAX_RESULTS."""
     scored = [score_job(profile, j) for j in jobs]
     scored.sort(key=lambda s: s.fit_score, reverse=True)
     out: list[dict] = []
-    for s in scored:
+    for s in scored[:MAX_RESULTS]:
         clean = {k: v for k, v in s.job.items() if k != "_raw_text"}
         out.append({
             **clean,
             "fit_score": s.fit_score,
             "priority":  priority_for(s.fit_score),
             "matched_skills": s.matched_skills,
-            "missing_skills": s.missing_skills,
+            "missing_skills": s.missing_skills[:15],  # cap modal payload
             "breakdown": s.breakdown,
             "why_fit": clean.get("why_fit") or _why_fit(s.matched_skills),
         })

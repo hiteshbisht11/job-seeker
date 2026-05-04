@@ -62,17 +62,22 @@ def _pdfminer_text(pdf_bytes: bytes) -> str:
 
 
 def extract_text(pdf_bytes: bytes) -> tuple[str, str]:
-    """Return (combined_text, primary_text).
-    `combined_text` = union of pdfminer + pypdf output, used for skill detection
-    (each library loses different glyphs on stylized PDFs).
-    `primary_text`  = best single source (pdfminer if non-empty), used for
-    years-of-experience and date parsing — concatenation would double-count dates.
-    """
+    """Return (combined_text, primary_text). Memory-conscious: try pdfminer
+    alone first; only spin up pypdf as a fallback when pdfminer's output is
+    too sparse to be trusted. Halves peak parsing memory on most PDFs vs.
+    running both in parallel (matters on 512 MB free-tier hosting).
+
+    `combined_text` is the union when we needed both extractors for recall.
+    `primary_text` is the cleaner single source for date / years parsing —
+    concatenation would double-count dates."""
     miner = _pdfminer_text(pdf_bytes)
-    py    = _pypdf_text(pdf_bytes)
+    if len(miner.strip()) >= 500:
+        return _normalize(miner), _normalize(miner)
+
+    py = _pypdf_text(pdf_bytes)
     if not (miner.strip() or py.strip()):
         raise RuntimeError("Could not extract any text from this PDF (likely a scanned image).")
-    primary = miner.strip() and miner or py
+    primary = miner if miner.strip() else py
     combined = miner + "\n" + py
     return _normalize(combined), _normalize(primary)
 
