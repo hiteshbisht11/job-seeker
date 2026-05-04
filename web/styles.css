@@ -1,0 +1,32 @@
+/* Pure vanilla CSS — Tailwind CDN does not process @apply in external files,
+ * so anything needing Tailwind tokens lives inside <style type="text/tailwindcss">
+ * in index.html. This file is for animations, fonts, and scrollbar polish only. */
+
+* {
+  font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+}
+
+/* line-clamp utilities (some older Tailwind builds skip these) */
+.line-clamp-2 {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.line-clamp-3 {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* Smooth fade for view transitions */
+section[id^="view-"] { animation: fadeIn .15s ease-out; }
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(4px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Custom scrollbar for modal */
+#modal > div::-webkit-scrollbar { width: 8px; }
+#modal > div::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }

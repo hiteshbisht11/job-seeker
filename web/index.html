@@ -1,0 +1,250 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Job Seeker — find roles that match your resume</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css" />
+
+  <style type="text/tailwindcss">
+    .nav-btn         { @apply px-3 py-1.5 rounded-lg text-sm font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition; }
+
+    .chip            { @apply px-3 py-1.5 rounded-full border border-slate-300 text-sm text-slate-700 hover:bg-slate-100 transition cursor-pointer; }
+    .chip-mini       { @apply px-2.5 py-1 rounded-full border border-slate-200 text-xs text-slate-600 hover:bg-slate-100 transition cursor-pointer; }
+    .chip-active     { @apply bg-indigo-600 text-white border-indigo-600 hover:bg-indigo-700; }
+
+    .priority-pill   { @apply inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold; }
+    .priority-High   { @apply bg-emerald-100 text-emerald-800; }
+    .priority-Medium { @apply bg-amber-100 text-amber-800; }
+    .priority-Stretch{ @apply bg-rose-100 text-rose-800; }
+
+    .fit-badge       { @apply inline-grid place-items-center w-12 h-12 rounded-xl font-bold text-lg shadow-sm shrink-0; }
+
+    .job-card        { @apply bg-white rounded-xl border border-slate-200 shadow-sm hover:shadow-md hover:border-indigo-200 transition cursor-pointer p-4 flex flex-col gap-3; }
+
+    .pill-skill-have { @apply inline-flex items-center px-2 py-0.5 rounded-md text-xs bg-emerald-50 text-emerald-700 border border-emerald-200; }
+    .pill-skill-miss { @apply inline-flex items-center px-2 py-0.5 rounded-md text-xs bg-rose-50 text-rose-700 border border-rose-200; }
+
+    .btn-primary     { @apply inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl bg-gradient-to-br from-indigo-600 to-violet-600 text-white font-semibold shadow-lg shadow-indigo-600/30 hover:shadow-xl hover:shadow-indigo-600/40 hover:-translate-y-0.5 transition-all duration-200; }
+    .btn-secondary   { @apply inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl bg-white border border-slate-200 text-slate-700 font-medium hover:border-slate-300 hover:bg-slate-50 transition; }
+
+    .feature-card    { @apply bg-white/70 backdrop-blur rounded-2xl border border-slate-200 p-5; }
+    .feature-icon    { @apply w-11 h-11 rounded-xl grid place-items-center text-white shadow-sm; }
+  </style>
+</head>
+<body class="bg-slate-50 text-slate-900 antialiased">
+
+  <!-- ========================================================== -->
+  <!-- WELCOME / LANDING SCREEN                                    -->
+  <!-- ========================================================== -->
+  <section id="screen-welcome" class="relative min-h-screen overflow-hidden">
+    <!-- gradient backdrop -->
+    <div class="absolute inset-0 -z-10">
+      <div class="absolute inset-0 bg-gradient-to-br from-indigo-50 via-white to-violet-50"></div>
+      <div class="absolute -top-40 -right-32 w-96 h-96 rounded-full bg-violet-200/40 blur-3xl"></div>
+      <div class="absolute -bottom-40 -left-32 w-96 h-96 rounded-full bg-indigo-200/40 blur-3xl"></div>
+    </div>
+
+    <!-- nav -->
+    <nav class="max-w-6xl mx-auto px-6 py-6 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-600 to-violet-600 text-white grid place-items-center font-extrabold text-lg shadow-md shadow-indigo-600/30">JS</div>
+        <div class="font-bold tracking-tight">Job Seeker</div>
+      </div>
+      <a href="#how" class="nav-btn hidden sm:inline-block">How it works</a>
+    </nav>
+
+    <!-- hero -->
+    <div class="max-w-5xl mx-auto px-6 pt-12 pb-20 text-center">
+      <span class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white border border-slate-200 text-xs font-medium text-slate-700 shadow-sm">
+        <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+        79 curated roles · India + worldwide remote
+      </span>
+
+      <h1 class="mt-6 text-5xl sm:text-6xl md:text-7xl font-extrabold tracking-tight leading-[1.05]">
+        Find roles that <br class="hidden sm:block">
+        <span class="bg-gradient-to-br from-indigo-600 via-violet-600 to-fuchsia-600 bg-clip-text text-transparent">match your resume.</span>
+      </h1>
+
+      <p class="mt-6 text-lg sm:text-xl text-slate-600 max-w-2xl mx-auto leading-relaxed">
+        Upload your PDF. We parse the skills, score every curated role for fit, and rank them.
+        No sign-up. Nothing stored. Results in seconds.
+      </p>
+
+      <div class="mt-10 flex flex-col sm:flex-row items-center justify-center gap-3">
+        <button id="getStartedBtn" class="btn-primary text-base">
+          Upload your resume
+          <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M5 12h14m0 0l-6-6m6 6l-6 6"/>
+          </svg>
+        </button>
+        <a href="#how" class="btn-secondary text-sm">Learn how it works</a>
+      </div>
+
+      <p class="mt-6 text-xs text-slate-500">
+        Resume parsed in-memory · discarded after scoring · zero data retention
+      </p>
+    </div>
+
+    <!-- features -->
+    <div id="how" class="max-w-6xl mx-auto px-6 pb-20">
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div class="feature-card">
+          <div class="feature-icon bg-gradient-to-br from-indigo-500 to-indigo-600">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+          </div>
+          <h3 class="mt-4 font-semibold text-slate-900">1. Upload your PDF</h3>
+          <p class="mt-1.5 text-sm text-slate-600 leading-relaxed">Drop your resume. We extract skills, years of experience, and titles using two PDF parsers in parallel for higher recall.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon bg-gradient-to-br from-violet-500 to-violet-600">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+          </div>
+          <h3 class="mt-4 font-semibold text-slate-900">2. We score every role</h3>
+          <p class="mt-1.5 text-sm text-slate-600 leading-relaxed">Each role is scored 0–100 on skill recall, breadth, experience fit, and title alignment. Recomputed for every upload.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon bg-gradient-to-br from-fuchsia-500 to-rose-500">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/></svg>
+          </div>
+          <h3 class="mt-4 font-semibold text-slate-900">3. Apply, with context</h3>
+          <p class="mt-1.5 text-sm text-slate-600 leading-relaxed">See matched skills, gap skills, and direct careers-page links. Filter by India / remote, priority, or search.</p>
+        </div>
+      </div>
+    </div>
+
+    <footer class="max-w-6xl mx-auto px-6 pb-8 text-center text-xs text-slate-400">
+      Built with FastAPI · Tailwind · Vanilla JS · No tracking, no DB
+    </footer>
+  </section>
+
+
+  <!-- ========================================================== -->
+  <!-- UPLOAD SCREEN                                               -->
+  <!-- ========================================================== -->
+  <section id="screen-upload" class="hidden relative min-h-screen px-4 py-10">
+    <div class="absolute inset-0 -z-10 bg-gradient-to-br from-indigo-50 via-white to-violet-50"></div>
+
+    <div class="max-w-xl mx-auto">
+      <div class="flex items-center justify-between mb-8">
+        <button id="backToWelcomeBtn" class="flex items-center gap-2 text-sm text-slate-600 hover:text-slate-900 transition">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/></svg>
+          Back
+        </button>
+        <div class="flex items-center gap-2">
+          <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-indigo-600 to-violet-600 text-white grid place-items-center font-extrabold shadow-md shadow-indigo-600/30">JS</div>
+          <div class="font-bold tracking-tight">Job Seeker</div>
+        </div>
+      </div>
+
+      <div class="bg-white rounded-3xl shadow-xl shadow-slate-200/60 border border-slate-200 p-8">
+        <h2 class="text-2xl font-bold tracking-tight">Upload your resume</h2>
+        <p class="text-sm text-slate-600 mt-1.5">PDF, max 5 MB. Text-based PDFs work best (not scanned images).</p>
+
+        <label id="dropZone" for="resumeInput"
+               class="mt-6 block border-2 border-dashed border-slate-300 rounded-2xl p-12 text-center cursor-pointer hover:border-indigo-400 hover:bg-indigo-50/30 transition">
+          <div class="w-14 h-14 mx-auto rounded-2xl bg-indigo-100 grid place-items-center">
+            <svg class="w-7 h-7 text-indigo-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 7.5m0 0L7.5 12M12 7.5v9"/>
+            </svg>
+          </div>
+          <div class="mt-4 text-sm font-semibold" id="dropLabel">Click or drop a PDF here</div>
+          <div class="text-xs text-slate-500 mt-1" id="fileName"></div>
+        </label>
+        <input id="resumeInput" type="file" accept="application/pdf" class="hidden" />
+
+        <button id="analyzeBtn" disabled
+                class="mt-6 w-full py-3.5 rounded-xl bg-gradient-to-br from-indigo-600 to-violet-600 text-white font-semibold shadow-lg shadow-indigo-600/30 disabled:bg-slate-300 disabled:bg-none disabled:shadow-none disabled:cursor-not-allowed hover:shadow-xl hover:shadow-indigo-600/40 transition-all">
+          Analyze & match jobs
+        </button>
+        <div id="uploadError" class="hidden mt-3 text-sm text-rose-600"></div>
+        <div id="uploadProgress" class="hidden mt-5 text-center text-sm text-slate-600">
+          <div class="inline-block w-5 h-5 border-2 border-indigo-500 border-t-transparent rounded-full animate-spin align-middle"></div>
+          <span class="ml-2 align-middle">Parsing resume and scoring jobs…</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ========================================================== -->
+  <!-- DASHBOARD SCREEN                                            -->
+  <!-- ========================================================== -->
+  <section id="screen-dashboard" class="hidden">
+    <header class="bg-white/80 backdrop-blur border-b border-slate-200 sticky top-0 z-30">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between h-16">
+        <div class="flex items-center gap-3">
+          <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-indigo-600 to-violet-600 text-white grid place-items-center font-extrabold shadow-md shadow-indigo-600/30">JS</div>
+          <div>
+            <div class="font-bold leading-tight tracking-tight">Job Seeker</div>
+            <div class="text-xs text-slate-500" id="dashSubtitle">—</div>
+          </div>
+        </div>
+        <button id="reuploadBtn" class="btn-secondary text-sm">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/></svg>
+          Upload another resume
+        </button>
+      </div>
+    </header>
+
+    <section class="bg-white border-b border-slate-200">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-5 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3" id="statsBar"></div>
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-5 text-sm text-slate-600">
+        <span class="font-semibold text-slate-900">Detected skills:</span>
+        <span id="profileSkills" class="ml-1"></span>
+      </div>
+    </section>
+
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+      <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-4 mb-6">
+        <div class="flex flex-col md:flex-row md:items-center gap-3">
+          <div class="flex-1 relative">
+            <input id="searchInput" type="search" placeholder="Search company, role, skill…"
+                   class="w-full rounded-xl border border-slate-300 pl-10 pr-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent" />
+            <svg class="absolute left-3 top-3 w-4 h-4 text-slate-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/>
+            </svg>
+          </div>
+          <select id="sortSelect" class="rounded-xl border border-slate-300 px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
+            <option value="fit-desc">Fit score (high → low)</option>
+            <option value="fit-asc">Fit score (low → high)</option>
+            <option value="company-asc">Company (A → Z)</option>
+          </select>
+        </div>
+
+        <div class="flex flex-wrap gap-2 mt-3" id="scopeFilters">
+          <button data-scope="all"    class="chip chip-active">All (<span id="cnt-all">0</span>)</button>
+          <button data-scope="india"  class="chip">India (<span id="cnt-india">0</span>)</button>
+          <button data-scope="remote" class="chip">Worldwide Remote (<span id="cnt-remote">0</span>)</button>
+        </div>
+        <div class="flex flex-wrap gap-2 mt-2" id="priorityFilters">
+          <button data-priority="all"     class="chip-mini chip-active">All priorities</button>
+          <button data-priority="High"    class="chip-mini">High</button>
+          <button data-priority="Medium"  class="chip-mini">Medium</button>
+          <button data-priority="Stretch" class="chip-mini">Stretch</button>
+        </div>
+      </div>
+
+      <div id="jobsGrid" class="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4"></div>
+      <div id="emptyState" class="hidden text-center py-16 text-slate-500">
+        <p class="text-base">No roles match your filters.</p>
+      </div>
+    </main>
+  </section>
+
+  <!-- ========================================================== -->
+  <!-- JOB DETAIL MODAL                                            -->
+  <!-- ========================================================== -->
+  <div id="modal" class="hidden fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm grid place-items-center p-4">
+    <div class="bg-white rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto shadow-2xl">
+      <div id="modalContent" class="p-6"></div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

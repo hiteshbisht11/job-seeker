@@ -6,3 +6,6 @@ venv/
 .vscode/
 .DS_Store
 output/*.xlsx
+.env
+uploads/
+.env.example
